@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./App.css"
-
+import axios from "axios";
 
 
 function App() {
@@ -10,7 +10,6 @@ function App() {
   const [search, setSearch] = useState("");
   const [editId, setEditId] = useState(null);
 
-  // Add / Update Note
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -29,32 +28,31 @@ function App() {
 
       setEditId(null);
     } else {
-      const newNote = {
-        id: Date.now(),
-        title: title,
-        content: content,
-      };
-
-      setNotes([...notes, newNote]);
-    }
+    axios.post("http://localhost:3000/notes", {
+      title: title,
+      content: content
+    })
+    .then((res) => {
+       setNotes([...notes, res.data]);
+    });
+  }
 
     setTitle("");
     setContent("");
   }
 
-  // Delete
   function deleteNote(id) {
     setNotes(notes.filter((note) => note.id !== id));
   }
 
-  // Edit
+  
   function editNote(note) {
     setTitle(note.title);
     setContent(note.content);
     setEditId(note.id);
   }
 
-  // Search
+  
   const filteredNotes = notes.filter(
     (note) =>
       note.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -64,10 +62,10 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-8">
 
-      {/* Main Container */}
+    
       <div className="mx-auto max-w-6xl">
 
-        {/* Header */}
+  
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
           <div>
@@ -80,7 +78,7 @@ function App() {
             </p>
           </div>
 
-          {/* Search */}
+      
           <input
             type="text"
             placeholder="🔍 Search notes..."
@@ -93,7 +91,7 @@ function App() {
           />
         </div>
 
-        {/* Add Note Form */}
+        
         <form
           onSubmit={handleSubmit}
           className="mb-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
@@ -102,7 +100,7 @@ function App() {
             {editId !== null ? "Edit Note" : "Create a Note"}
           </h2>
 
-          {/* Title */}
+       
           <input
             type="text"
             placeholder="Note title"
@@ -114,7 +112,6 @@ function App() {
                        focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
           />
 
-          {/* Content */}
           <textarea
             placeholder="Write your note here..."
             value={content}
@@ -156,7 +153,7 @@ function App() {
           </div>
         </form>
 
-        {/* Notes Header */}
+       
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-slate-800">
             My Notes
@@ -167,7 +164,7 @@ function App() {
           </span>
         </div>
 
-        {/* Notes */}
+  
         {filteredNotes.length === 0 ? (
 
           <div className="rounded-2xl border border-dashed border-slate-300
@@ -196,7 +193,7 @@ function App() {
                            hover:-translate-y-1 hover:shadow-lg"
               >
 
-                {/* Note */}
+           
                 <div className="mb-5">
 
                   <h3 className="mb-2 text-xl font-bold text-slate-800
@@ -211,7 +208,7 @@ function App() {
 
                 </div>
 
-                {/* Buttons */}
+              
                 <div className="flex gap-2 border-t border-slate-100 pt-4">
 
                   <button
